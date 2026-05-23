@@ -908,6 +908,69 @@ body {
 .reminder-modal h3 { font-size: 18px; margin-bottom: 8px; }
 .reminder-modal p { font-size: 14px; color: var(--text-secondary); margin-bottom: 16px; }
 .reminder-modal .btn-row { display: flex; gap: 10px; }
+
+/* Posture Page Styles */
+.posture-header {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+  color: #fff;
+  padding: 20px;
+  border-radius: var(--radius);
+  margin-bottom: 16px;
+}
+.posture-title { font-size: 18px; font-weight: 700; margin-bottom: 12px; }
+.posture-summary {
+  background: rgba(255,255,255,0.2);
+  padding: 12px 16px;
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.posture-icon { font-size: 18px; }
+.posture-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
+.posture-item {
+  background: var(--card);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
+}
+.posture-item-header {
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  transition: var(--transition);
+}
+.posture-item-header:hover { background: var(--primary-bg); }
+.posture-item-icon { font-size: 24px; }
+.posture-item-title { flex: 1; font-weight: 600; font-size: 15px; }
+.posture-item-arrow { color: var(--text-muted); font-size: 12px; transition: var(--transition); }
+.posture-item-content { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; padding: 0 16px; }
+.posture-item.expanded .posture-item-content { max-height: 300px; padding: 0 16px 16px; }
+.posture-keypoint {
+  background: var(--primary-bg);
+  color: var(--primary);
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+.posture-detail { color: var(--text-secondary); font-size: 13px; line-height: 1.7; }
+.posture-tips {
+  background: linear-gradient(135deg, #fff3e0, #ffe0b2);
+  border-radius: var(--radius);
+  padding: 16px;
+  border-left: 4px solid #ff9800;
+}
+.tips-title { font-weight: 700; color: #e65100; margin-bottom: 10px; font-size: 15px; }
+.tips-content { color: #bf360c; font-size: 13px; line-height: 1.7; }
+.tips-content p { margin-bottom: 8px; }
+.tips-content p:last-child { margin-bottom: 0; }
+
 </style>
 </head>
 <body>
@@ -923,6 +986,7 @@ body {
     <div class="nav-item active" data-page="today" onclick="switchPage('today')">今日训练</div>
     <div class="nav-item" data-page="library" onclick="switchPage('library')">动作库</div>
     <div class="nav-item" data-page="progress" onclick="switchPage('progress')">进度</div>
+    <div class="nav-item" data-page="posture" onclick="switchPage('posture')">体态</div>
     <div class="nav-item" data-page="settings" onclick="switchPage('settings')">设置</div>
   </div>
 
@@ -1001,6 +1065,26 @@ body {
     <div class="module-stats-section">
       <h3>各模块完成率</h3>
       <div id="moduleStats"></div>
+    </div>
+  </div>
+
+
+  <!-- Posture Page -->
+  <div class="page" id="page-posture">
+    <div class="posture-header">
+      <div class="posture-title">日常颈椎体态管理</div>
+      <div class="posture-summary">
+        <span class="posture-icon">💡</span>
+        <span>头顶悬线 + 鼻尖稍稍上扬 + 肩沉胛收 + 核心收紧</span>
+      </div>
+    </div>
+    <div id="posture-list" class="posture-list"></div>
+    <div class="posture-tips">
+      <div class="tips-title">🎯 核心原则</div>
+      <div class="tips-content">
+        <p><strong>头颈中立位：</strong>耳朵在肩膀正上方，下巴微收，后脑勺向上轻轻延伸。</p>
+        <p>出现脖子前侧发紧、后脑勺胀痛、手指麻木时，立即停止当前姿势，做深呼吸调整。</p>
+      </div>
     </div>
   </div>
 
@@ -1220,6 +1304,23 @@ const MODULES = [
 ];
 
 // ==================== STATE ====================
+
+const POSTURE_DATA = {
+  items: [
+    { id: 1, title: "抬头", keyPoint: "胸椎协同头部一起往上抬", detail: "寰枢椎上下活动度只有约10°，其余需要下颈椎段+胸椎协同。颈椎病人下颈椎段常反弓/椎间盘突出，胸椎需代偿更多。", icon: "⬆️" },
+    { id: 2, title: "低头", keyPoint: "收下巴低头，中下颈椎段不动", detail: "把东西推到桌子更远的地方，用眼球向下看。视力不好配眼镜，不要伸头凑近。洗澡时让水往头冲，不要低头让水冲脖子。", icon: "⬇️" },
+    { id: 3, title: "大幅低头场景", keyPoint: "屈髋，后背和脖子一条直线一起低下去", detail: "桌上/床上找东西、洗脸刷牙洗碗等场景。错误：仅低头、弯腰不弯腿。正确：屈髋，脊柱保持中立位整体前倾。", icon: "🔽" },
+    { id: 4, title: "左右转头", keyPoint: "先用眼睛转，再带动头往左右转", detail: "避免直接甩头。先用眼球转向目标方向，再带动头部缓慢转动，给前庭系统适应时间。", icon: "↔️" },
+    { id: 5, title: "看手机", keyPoint: "手机放在锁骨高度，收下巴低头", detail: "不要低头60度看手机。将手机举到锁骨高度，配合收下巴低头的姿势，用眼睛向下看。", icon: "📱" },
+    { id: 6, title: "电脑办公", keyPoint: "字体调大，屏幕和视线持平", detail: "字体调大避免头前倾找字。屏幕上沿与视线平齐，不要过高（会导致上颈段折叠）或过低。", icon: "💻" },
+    { id: 7, title: "大屏办公", keyPoint: "屏幕和视线持平即可", detail: "误区：不要因为之前低头多就把屏幕垫过高。正确：屏幕与视线持平，保持头颈中立位。", icon: "🖥️" },
+    { id: 8, title: "睡觉", keyPoint: "首选仰卧", detail: "首选仰卧位。侧睡通常是一侧肌肉紧张导致，需要配合松解和锻炼恢复平衡。", icon: "🛏️" },
+    { id: 9, title: "起床/躺下", keyPoint: "用手撑起身体，重新调整位置", detail: "避免用头抵着床蹭、脖子发力换位置。正确：用手支撑身体移动，保持头颈中立。", icon: "🔄" },
+    { id: 10, title: "电视/沙发", keyPoint: "后背完全靠住，脖子不悬空", detail: "后背完全靠住靠背，腰部有支撑。半躺时用颈枕支撑颈部，避免脖子悬空。", icon: "🛋️" },
+    { id: 11, title: "日常行走", keyPoint: "头顶悬线 + 鼻尖微扬 + 肩沉胛收 + 核心收紧", detail: "想象头顶有绳子向上提拉，鼻尖略高于水平线（不能多），肩膀下沉肩胛轻收，腹部核心微收紧。", icon: "🚶" }
+  ]
+};
+
 const STORAGE_KEY = 'mia_rehab';
 const REMINDER_KEY = 'mia_reminder';
 const EXPORT_PREFIX = 'Mia康复数据';
@@ -1316,6 +1417,32 @@ function confirmAction() {
 }
 
 // ==================== NAVIGATION ====================
+
+function renderPostureList() {
+  const list = document.getElementById('posture-list');
+  if (!list || !window.POSTURE_DATA) return;
+  list.innerHTML = POSTURE_DATA.items.map(item => `
+    <div class="posture-item" data-id="${item.id}">
+      <div class="posture-item-header">
+        <span class="posture-item-icon">${item.icon}</span>
+        <span class="posture-item-title">${item.title}</span>
+        <span class="posture-item-arrow">▼</span>
+      </div>
+      <div class="posture-item-content">
+        <div class="posture-keypoint">${item.keyPoint}</div>
+        <div class="posture-detail">${item.detail}</div>
+      </div>
+    </div>
+  `).join('');
+  list.querySelectorAll('.posture-item-header').forEach(header => {
+    header.addEventListener('click', () => {
+      const item = header.parentElement;
+      item.classList.toggle('expanded');
+      header.querySelector('.posture-item-arrow').textContent = item.classList.contains('expanded') ? '▲' : '▼';
+    });
+  });
+}
+
 function switchPage(page) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
@@ -1323,6 +1450,7 @@ function switchPage(page) {
   document.querySelector(`.nav-item[data-page="${page}"]`).classList.add('active');
 
   if (page === 'progress') renderProgress();
+  if (page === 'posture') renderPostureList();
   if (page === 'settings') renderSettings();
   if (page === 'library') renderLibrary();
   if (page === 'today') renderToday();
