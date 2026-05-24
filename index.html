@@ -1082,7 +1082,7 @@ body {
     <div class="posture-tips">
       <div class="tips-title">🎯 核心原则</div>
       <div class="tips-content">
-        <p><strong>头颈中立位：</strong>耳朵在肩膀正上方，下巴微收，后脑勺向上轻轻延伸。</p>
+        <p><strong>头颈中立位：</strong>耳朵在肩膀正上方，下巴微收（为了不让上颈椎折叠），鼻尖稍上扬（保持生理曲线），后脑勺向上轻轻延伸。</p>
         <p>出现脖子前侧发紧、后脑勺胀痛、手指麻木时，立即停止当前姿势，做深呼吸调整。</p>
       </div>
     </div>
@@ -1305,7 +1305,7 @@ const MODULES = [
 
 // ==================== STATE ====================
 
-const POSTURE_DATA = {
+window.POSTURE_DATA = {
   items: [
     { id: 1, title: "抬头", keyPoint: "胸椎协同头部一起往上抬", detail: "寰枢椎上下活动度只有约10°，其余需要下颈椎段+胸椎协同。颈椎病人下颈椎段常反弓/椎间盘突出，胸椎需代偿更多。", icon: "⬆️" },
     { id: 2, title: "低头", keyPoint: "收下巴低头，中下颈椎段不动", detail: "把东西推到桌子更远的地方，用眼球向下看。视力不好配眼镜，不要伸头凑近。洗澡时让水往头冲，不要低头让水冲脖子。", icon: "⬇️" },
@@ -1420,8 +1420,8 @@ function confirmAction() {
 
 function renderPostureList() {
   const list = document.getElementById('posture-list');
-  if (!list || !window.POSTURE_DATA) return;
-  list.innerHTML = POSTURE_DATA.items.map(item => `
+  if (!list || !window.POSTURE_DATA || !window.POSTURE_DATA.items) return;
+  list.innerHTML = window.POSTURE_DATA.items.map(item => `
     <div class="posture-item" data-id="${item.id}">
       <div class="posture-item-header">
         <span class="posture-item-icon">${item.icon}</span>
