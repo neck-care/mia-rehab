@@ -1,0 +1,2571 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Mia第一周康复方案</title>
+<style>
+:root {
+  --primary: #ef6c00;
+  --primary-light: #ff9800;
+  --primary-lighter: #ffe0b2;
+  --primary-bg: #fff3e0;
+  --accent: #FF9800;
+  --accent-light: #FFE0B2;
+  --danger: #f44336;
+  --danger-light: #ffcdd2;
+  --text: #e65100;
+  --text-secondary: #ef6c00;
+  --text-muted: #ff9800;
+  --bg: #fff3e0;
+  --card: #ffffff;
+  --border: #ffe0b2;
+  --shadow: rgba(239,108,0,0.1);
+  --shadow-lg: rgba(239,108,0,0.15);
+  --radius: 12px;
+  --radius-sm: 8px;
+  --transition: 0.3s cubic-bezier(0.4,0,0.2,1);
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+.app-container {
+  max-width: 800px;
+  margin: 0 auto;
+  min-height: 100vh;
+  background: var(--bg);
+  position: relative;
+}
+@media (max-width: 480px) {
+  .app-container { max-width: 100vw; }
+}
+
+/* Header */
+.app-header {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+  color: #fff;
+  padding: 20px 20px 16px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+}
+.app-header h1 {
+  font-size: 20px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.app-header h1 .icon { font-size: 24px; }
+.app-header .date-info {
+  font-size: 13px;
+  opacity: 0.9;
+  margin-top: 4px;
+}
+
+/* Navigation */
+.nav-bar {
+  display: flex;
+  background: var(--card);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 72px;
+  z-index: 99;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+}
+.nav-item {
+  flex: 1;
+  padding: 12px 8px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: var(--transition);
+  border-bottom: 3px solid transparent;
+  user-select: none;
+}
+.nav-item.active {
+  color: var(--primary);
+  border-bottom-color: var(--primary);
+  font-weight: 600;
+}
+.nav-item:hover { color: var(--primary-light); }
+
+/* Pages */
+.page { display: none; padding: 16px 16px 100px; animation: fadeIn 0.3s ease; }
+.page.active { display: block; }
+@keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+
+/* Streak Banner */
+.streak-banner {
+  background: linear-gradient(135deg, #ff9800, #f57c00);
+  color: #fff;
+  border-radius: var(--radius);
+  padding: 16px 20px;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 2px 12px rgba(255,152,0,0.3);
+}
+.streak-banner .streak-num {
+  font-size: 36px;
+  font-weight: 800;
+  line-height: 1;
+}
+.streak-banner .streak-label {
+  font-size: 13px;
+  opacity: 0.9;
+  margin-top: 2px;
+}
+.streak-banner .streak-icon { font-size: 40px; }
+
+/* Stats Cards */
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 16px;
+}
+.stat-card {
+  background: var(--card);
+  border-radius: var(--radius-sm);
+  padding: 14px 12px;
+  text-align: center;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
+}
+.stat-card .stat-value {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--primary);
+}
+.stat-card .stat-label {
+  font-size: 11px;
+  color: var(--text-secondary);
+  margin-top: 4px;
+}
+
+/* Module Section */
+.module-section {
+  background: var(--card);
+  border-radius: var(--radius);
+  margin-bottom: 12px;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  border: 1px solid var(--border);
+  transition: var(--transition);
+}
+.module-header {
+  display: flex;
+  align-items: center;
+  padding: 14px 16px;
+  cursor: pointer;
+  user-select: none;
+  gap: 10px;
+  transition: var(--transition);
+}
+.module-header:hover { background: var(--primary-bg); }
+.module-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+.module-icon.m1 { background: #ffebee; }
+.module-icon.m2 { background: #fff3e0; }
+.module-icon.m3 { background: #e3f2fd; }
+.module-icon.m4 { background: #f3e5f5; }
+.module-icon.m5 { background: #e8eaf6; }
+.module-title { flex: 1; }
+.module-title h3 { font-size: 15px; font-weight: 600; }
+.module-title .module-progress { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+.module-arrow {
+  font-size: 12px;
+  color: var(--text-muted);
+  transition: transform 0.3s ease;
+}
+.module-arrow.open { transform: rotate(180deg); }
+.module-complete-badge {
+  background: var(--primary);
+  color: #fff;
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-weight: 600;
+}
+
+/* Exercise Item */
+.exercise-list { padding: 0 12px 12px; }
+.exercise-item {
+  display: flex;
+  align-items: center;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  margin-bottom: 4px;
+  cursor: pointer;
+  transition: var(--transition);
+  gap: 10px;
+  position: relative;
+}
+.exercise-item:hover { background: var(--primary-bg); }
+.exercise-item.starred { background: #fffde7; border-left: 3px solid var(--accent); }
+.exercise-item.completed { opacity: 0.6; }
+.exercise-item.completed .exercise-name { text-decoration: line-through; }
+.exercise-checkbox {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: var(--transition);
+  cursor: pointer;
+}
+.exercise-checkbox.checked {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: #fff;
+  font-size: 12px;
+}
+.exercise-info { flex: 1; min-width: 0; }
+.exercise-name {
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.exercise-meta {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+.exercise-star {
+  font-size: 16px;
+  cursor: pointer;
+  flex-shrink: 0;
+  padding: 4px;
+}
+.exercise-star.active { color: var(--accent); }
+.exercise-note-icon {
+  font-size: 14px;
+  color: var(--primary-light);
+  flex-shrink: 0;
+}
+
+/* Total Progress Bar */
+.total-progress {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 16px;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
+  margin-top: 16px;
+}
+.total-progress .progress-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+.progress-bar-bg {
+  height: 12px;
+  background: var(--primary-lighter);
+  border-radius: 6px;
+  overflow: hidden;
+}
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary), var(--primary-light));
+  border-radius: 6px;
+  transition: width 0.5s cubic-bezier(0.4,0,0.2,1);
+  position: relative;
+}
+.progress-bar-fill::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+  animation: shimmer 2s infinite;
+}
+@keyframes shimmer { 0%{transform:translateX(-100%)} 100%{transform:translateX(100%)} }
+
+/* Completion Message */
+.completion-msg {
+  background: linear-gradient(135deg, var(--primary), #d32f2f);
+  color: #fff;
+  border-radius: var(--radius);
+  padding: 20px;
+  text-align: center;
+  margin-top: 16px;
+  animation: popIn 0.5s cubic-bezier(0.68,-0.55,0.27,1.55);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+}
+.completion-msg .big-emoji { font-size: 40px; margin-bottom: 8px; }
+.completion-msg h3 { font-size: 18px; margin-bottom: 4px; }
+.completion-msg p { font-size: 13px; opacity: 0.9; }
+@keyframes popIn { from{transform:scale(0.8);opacity:0} to{transform:scale(1);opacity:1} }
+
+/* Modal / Bottom Sheet */
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 200;
+  display: none;
+  align-items: flex-end;
+  justify-content: center;
+}
+.modal-overlay.show { display: flex; }
+.modal-sheet {
+  background: var(--card);
+  border-radius: 20px 20px 0 0;
+  width: 100%;
+  max-width: 800px;
+  max-height: 85vh;
+  overflow-y: auto;
+  animation: slideUp 0.35s cubic-bezier(0.4,0,0.2,1);
+  padding-bottom: env(safe-area-inset-bottom, 20px);
+}
+@keyframes slideUp { from{transform:translateY(100%)} to{transform:translateY(0)} }
+.modal-handle {
+  width: 40px;
+  height: 4px;
+  background: #ccc;
+  border-radius: 2px;
+  margin: 12px auto;
+}
+.modal-content { padding: 0 20px 20px; }
+.modal-title {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.modal-module-tag {
+  font-size: 12px;
+  padding: 2px 10px;
+  border-radius: 10px;
+  font-weight: 500;
+}
+.modal-module-tag.m1 { background: #ffebee; color: #c62828; }
+.modal-module-tag.m2 { background: #fff3e0; color: #e65100; }
+.modal-module-tag.m3 { background: #e3f2fd; color: #1565c0; }
+.modal-module-tag.m4 { background: #f3e5f5; color: #7b1fa2; }
+.modal-module-tag.m5 { background: #e8eaf6; color: #3f51b5; }
+.modal-meta-row {
+  display: flex;
+  gap: 12px;
+  margin: 12px 0;
+  flex-wrap: wrap;
+}
+.modal-meta-item {
+  background: var(--primary-bg);
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+}
+.modal-section-title {
+  font-size: 15px;
+  font-weight: 600;
+  margin: 16px 0 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.modal-steps { list-style: none; counter-reset: step; }
+.modal-steps li {
+  counter-increment: step;
+  padding: 8px 0 8px 36px;
+  position: relative;
+  font-size: 14px;
+  line-height: 1.6;
+  border-bottom: 1px solid var(--primary-lighter);
+}
+.modal-steps li:last-child { border-bottom: none; }
+.modal-steps li::before {
+  content: counter(step);
+  position: absolute;
+  left: 0;
+  top: 8px;
+  width: 24px;
+  height: 24px;
+  background: var(--primary);
+  color: #fff;
+  border-radius: 50%;
+  font-size: 12px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.modal-tips {
+  background: #fffde7;
+  border-radius: var(--radius-sm);
+  padding: 12px 16px;
+  font-size: 13px;
+  line-height: 1.7;
+  border-left: 3px solid var(--accent);
+}
+.modal-note-area {
+  margin-top: 16px;
+}
+.modal-note-area textarea {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 10px;
+  font-size: 14px;
+  font-family: inherit;
+  resize: vertical;
+  min-height: 60px;
+  outline: none;
+  transition: var(--transition);
+}
+.modal-note-area textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(0,0,0,0.05); }
+.modal-btn-row {
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
+}
+.btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  flex: 1;
+}
+.btn-primary { background: var(--primary); color: #fff; }
+.btn-primary:hover { background: #c62828; }
+.btn-secondary { background: var(--primary-lighter); color: var(--primary); }
+.btn-secondary:hover { background: var(--primary-bg); }
+.btn-danger { background: var(--danger-light); color: var(--danger); }
+.btn-danger:hover { background: var(--danger); color: #fff; }
+
+/* Library Page */
+.library-module {
+  margin-bottom: 20px;
+}
+.library-module-title {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.library-exercise {
+  background: var(--card);
+  border-radius: var(--radius-sm);
+  padding: 12px 16px;
+  margin-bottom: 6px;
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid var(--border);
+}
+.library-exercise:hover { transform: translateX(4px); box-shadow: var(--shadow-lg); }
+.library-exercise .le-num {
+  width: 28px;
+  height: 28px;
+  background: var(--primary-bg);
+  color: var(--primary);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.library-exercise .le-info { flex: 1; }
+.library-exercise .le-name { font-size: 14px; font-weight: 500; }
+.library-exercise .le-meta { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+.library-exercise .le-star { font-size: 16px; cursor: pointer; }
+.library-exercise .le-star.active { color: var(--accent); }
+
+/* Progress Page */
+.calendar-section {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 16px;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
+  margin-bottom: 16px;
+}
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+.calendar-header h3 { font-size: 16px; font-weight: 600; }
+.calendar-nav {
+  display: flex;
+  gap: 8px;
+}
+.calendar-nav button {
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--card);
+  cursor: pointer;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition);
+}
+.calendar-nav button:hover { background: var(--primary-bg); }
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+.calendar-day-label {
+  text-align: center;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+  padding: 4px;
+}
+.calendar-day {
+  aspect-ratio: 1;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 500;
+  transition: var(--transition);
+}
+.calendar-day.empty { background: transparent; }
+.calendar-day.today { border: 2px solid var(--primary); font-weight: 700; }
+.calendar-day.complete { background: var(--primary); color: #fff; }
+.calendar-day.partial { background: var(--accent); color: #fff; }
+.calendar-day.missed { background: var(--danger-light); color: var(--danger); }
+.calendar-day.future { color: #ccc; }
+.calendar-day.past-empty { background: #f5f5f5; color: #bbb; }
+
+/* Week Chart */
+.week-chart-section {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 16px;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
+  margin-bottom: 16px;
+}
+.week-chart-section h3 { font-size: 16px; font-weight: 600; margin-bottom: 12px; }
+.week-chart {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-around;
+  height: 120px;
+  padding: 0 8px;
+}
+.week-bar-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  flex: 1;
+}
+.week-bar {
+  width: 28px;
+  border-radius: 6px 6px 0 0;
+  background: var(--primary-lighter);
+  transition: height 0.5s cubic-bezier(0.4,0,0.2,1);
+  position: relative;
+  min-height: 4px;
+}
+.week-bar.filled { background: linear-gradient(180deg, var(--primary), var(--primary-light)); }
+.week-bar-label { font-size: 11px; color: var(--text-muted); }
+.week-bar-value { font-size: 10px; font-weight: 600; color: var(--primary); }
+
+/* Cumulative Stats */
+.cumulative-section {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 16px;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
+  margin-bottom: 16px;
+}
+.cumulative-section h3 { font-size: 16px; font-weight: 600; margin-bottom: 12px; }
+.cumulative-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+.cumulative-item {
+  background: var(--primary-bg);
+  border-radius: var(--radius-sm);
+  padding: 14px;
+  text-align: center;
+}
+.cumulative-item .ci-value { font-size: 28px; font-weight: 800; color: var(--primary); }
+.cumulative-item .ci-label { font-size: 12px; color: var(--text-secondary); margin-top: 4px; }
+
+/* Module Stats */
+.module-stats-section {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 16px;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
+}
+.module-stats-section h3 { font-size: 16px; font-weight: 600; margin-bottom: 12px; }
+.module-stat-item {
+  margin-bottom: 12px;
+}
+.module-stat-item:last-child { margin-bottom: 0; }
+.module-stat-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  margin-bottom: 4px;
+}
+.module-stat-header .ms-name { font-weight: 500; }
+.module-stat-header .ms-pct { font-weight: 700; color: var(--primary); }
+.module-stat-bar {
+  height: 8px;
+  background: var(--primary-lighter);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.module-stat-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.5s ease;
+}
+.module-stat-fill.m1 { background: #e53935; }
+.module-stat-fill.m2 { background: #ff9800; }
+.module-stat-fill.m3 { background: #2196f3; }
+.module-stat-fill.m4 { background: #9c27b0; }
+.module-stat-fill.m5 { background: #3f51b5; }
+
+/* Settings Page */
+.settings-section {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 16px;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
+  margin-bottom: 16px;
+}
+.settings-section h3 { font-size: 16px; font-weight: 600; margin-bottom: 12px; }
+.setting-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--primary-lighter);
+}
+.setting-item:last-child { border-bottom: none; }
+.setting-label { font-size: 14px; }
+.setting-desc { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+.setting-time-info { font-size: 11px; color: var(--text-secondary); margin-top: 4px; opacity: 0.8; }
+.sync-tip-card {
+  background: #e3f2fd;
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  margin-bottom: 16px;
+  border-left: 4px solid #1976d2;
+  box-shadow: var(--shadow);
+}
+.sync-tip-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1565c0;
+  margin-bottom: 8px;
+}
+.sync-tip-content {
+  font-size: 13px;
+  color: #37474f;
+  line-height: 1.8;
+}
+.sync-tip-row {
+  padding: 2px 0;
+}
+.sync-tip-highlight {
+  color: #1565c0;
+  font-weight: 500;
+  margin-top: 4px;
+}
+.starred-exercise-list { margin-top: 8px; }
+.starred-exercise-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 0;
+  font-size: 13px;
+  border-bottom: 1px solid var(--primary-lighter);
+}
+.starred-exercise-item:last-child { border-bottom: none; }
+.starred-exercise-item .se-star { color: var(--accent); }
+.no-starred { font-size: 13px; color: var(--text-muted); text-align: center; padding: 16px; }
+
+/* Reorder */
+.reorder-list { margin-top: 8px; }
+.reorder-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 8px;
+  background: var(--primary-bg);
+  border-radius: var(--radius-sm);
+  margin-bottom: 4px;
+  font-size: 13px;
+  cursor: grab;
+  user-select: none;
+}
+.reorder-item:active { cursor: grabbing; }
+.reorder-item .ri-handle { color: var(--text-muted); font-size: 16px; }
+.reorder-item .ri-arrows { margin-left: auto; display: flex; flex-direction: column; gap: 0; }
+.reorder-item .ri-arrows button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 12px;
+  padding: 0 4px;
+  color: var(--text-muted);
+  line-height: 1;
+}
+.reorder-item .ri-arrows button:hover { color: var(--primary); }
+
+/* Confirm Dialog */
+.confirm-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 300;
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+.confirm-overlay.show { display: flex; }
+.confirm-box {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 24px;
+  max-width: 320px;
+  width: 90%;
+  text-align: center;
+  animation: popIn 0.3s ease;
+}
+.confirm-box h4 { font-size: 16px; margin-bottom: 8px; }
+.confirm-box p { font-size: 14px; color: var(--text-secondary); margin-bottom: 16px; }
+.confirm-box .btn-row { display: flex; gap: 10px; }
+
+/* Toast */
+.toast {
+  position: fixed;
+  bottom: 100px;
+  left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  background: #333;
+  color: #fff;
+  padding: 10px 24px;
+  border-radius: 20px;
+  font-size: 14px;
+  z-index: 400;
+  opacity: 0;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+.toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--primary-lighter); border-radius: 2px; }
+
+/* Toggle switch */
+.toggle { position: relative; width: 44px; height: 24px; flex-shrink: 0; }
+.toggle input { opacity: 0; width: 0; height: 0; }
+.toggle-slider {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: #ccc;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: var(--transition);
+}
+.toggle-slider::before {
+  content: '';
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  background: #fff;
+  border-radius: 50%;
+  top: 3px;
+  left: 3px;
+  transition: var(--transition);
+}
+.toggle input:checked + .toggle-slider { background: var(--primary); }
+.toggle input:checked + .toggle-slider::before { transform: translateX(20px); }
+
+/* Dragging state */
+.reorder-item.dragging { opacity: 0.5; background: var(--primary-lighter); }
+
+/* Reminder Styles */
+.reminder-section {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 16px;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
+  margin-bottom: 16px;
+}
+.reminder-section h3 { font-size: 16px; font-weight: 600; margin-bottom: 12px; }
+.reminder-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--primary-lighter);
+}
+.reminder-toggle:last-child { border-bottom: none; }
+.reminder-toggle-label { font-size: 14px; }
+.reminder-toggle-desc { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+.reminder-interval {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+.reminder-interval-btn {
+  flex: 1;
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--card);
+  font-size: 13px;
+  cursor: pointer;
+  transition: var(--transition);
+}
+.reminder-interval-btn.active {
+  background: var(--primary);
+  color: #fff;
+  border-color: var(--primary);
+}
+.reminder-status {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-top: 8px;
+  padding: 8px;
+  background: var(--primary-bg);
+  border-radius: var(--radius-sm);
+}
+
+/* Reminder Modal */
+.reminder-modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.6);
+  z-index: 500;
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+.reminder-modal-overlay.show { display: flex; }
+.reminder-modal {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 24px;
+  max-width: 320px;
+  width: 90%;
+  text-align: center;
+  animation: popIn 0.3s ease;
+  box-shadow: var(--shadow-lg);
+}
+.reminder-modal .big-icon { font-size: 48px; margin-bottom: 12px; }
+.reminder-modal h3 { font-size: 18px; margin-bottom: 8px; }
+.reminder-modal p { font-size: 14px; color: var(--text-secondary); margin-bottom: 16px; }
+.reminder-modal .btn-row { display: flex; gap: 10px; }
+
+/* Posture Page Styles */
+.posture-header {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+  color: #fff;
+  padding: 20px;
+  border-radius: var(--radius);
+  margin-bottom: 16px;
+}
+.posture-title { font-size: 18px; font-weight: 700; margin-bottom: 12px; }
+.posture-summary {
+  background: rgba(255,255,255,0.2);
+  padding: 12px 16px;
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.posture-icon { font-size: 18px; }
+.posture-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
+
+/* Muscle Release Page Styles */
+.release-intro-card {
+  background: linear-gradient(135deg, #fff3e0, #ffe0b2);
+  border-radius: var(--radius);
+  padding: 18px;
+  margin-bottom: 16px;
+  border: 1px solid #ffcc80;
+}
+.release-intro-card h3 { font-size: 17px; color: #e65100; margin-bottom: 10px; }
+.release-intro-card p { font-size: 14px; line-height: 1.7; color: var(--text); margin-bottom: 8px; }
+.release-tip-text { background: rgba(255,255,255,0.7); padding: 10px 12px; border-radius: var(--radius-sm); border-left: 4px solid #ff9800; font-size: 13px !important; color: #bf360c !important; }
+.release-section { background: var(--card); border-radius: var(--radius); margin-bottom: 14px; box-shadow: var(--shadow); overflow: hidden; border: 1px solid var(--border); }
+.release-section-header { background: linear-gradient(135deg, #fff8e1, #ffecb3); padding: 14px 16px; cursor: pointer; display: flex; align-items: center; justify-content: space-between; user-select: none; transition: var(--transition); }
+.release-section-header:hover { background: linear-gradient(135deg, #ffecb3, #ffe082); }
+.release-section-header h4 { font-size: 15px; color: #f57f17; font-weight: 600; display: flex; align-items: center; gap: 8px; flex:1; }
+.release-section-header .rs-arrow { font-size: 12px; color: #f57f17; transition: transform 0.3s ease; }
+.release-section-header.expanded .rs-arrow { transform: rotate(180deg); }
+.release-item-body { display: none; padding: 14px 16px; border-top: 1px solid var(--border); }
+.release-item-body.open { display: block; }
+.release-symptom { background: #ffebee; color: #c62828; padding: 8px 12px; border-radius: var(--radius-sm); font-size: 13px; margin-bottom: 12px; border-left: 3px solid #ef5350; }
+.release-find { font-size: 13px; line-height: 1.7; color: var(--text-secondary); margin-bottom: 12px; padding-bottom: 10px; border-bottom: 1px dashed var(--border); }
+.release-find strong { color: var(--primary); }
+.release-method { font-size: 13px; line-height: 1.7; color: var(--text-secondary); padding: 10px; background: #f9fbe7; border-radius: var(--radius-sm); border-left: 3px solid #8bc34a; }
+.release-method strong { color: #558b2f; }
+.posture-error { background: #ffebee; color: #c62828; padding: 8px 12px; border-radius: var(--radius-sm); margin-top: 8px; font-size: 12px; border-left: 3px solid #ef5350; }
+.posture-correct { background: #e8f5e9; color: #2e7d32; padding: 8px 12px; border-radius: var(--radius-sm); margin-top: 6px; font-size: 12px; border-left: 3px solid #66bb6a; }
+
+.posture-item {
+  background: var(--card);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
+}
+.posture-item-header {
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  transition: var(--transition);
+}
+.posture-item-header:hover { background: var(--primary-bg); }
+.posture-item-icon { font-size: 24px; }
+.posture-item-title { flex: 1; font-weight: 600; font-size: 15px; }
+.posture-item-arrow { color: var(--text-muted); font-size: 12px; transition: var(--transition); }
+.posture-item-content { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; padding: 0 16px; }
+.posture-item.expanded .posture-item-content { max-height: 300px; padding: 0 16px 16px; }
+.posture-keypoint {
+  background: var(--primary-bg);
+  color: var(--primary);
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+.posture-detail { color: var(--text-secondary); font-size: 13px; line-height: 1.7; }
+.posture-tips {
+  background: linear-gradient(135deg, #fff3e0, #ffe0b2);
+  border-radius: var(--radius);
+  padding: 16px;
+  border-left: 4px solid #ff9800;
+}
+.tips-title { font-weight: 700; color: #e65100; margin-bottom: 10px; font-size: 15px; }
+.tips-content { color: #bf360c; font-size: 13px; line-height: 1.7; }
+.tips-content p { margin-bottom: 8px; }
+.tips-content p:last-child { margin-bottom: 0; }
+
+</style>
+</head>
+<body>
+<div class="app-container" id="app">
+  <!-- Header -->
+  <div class="app-header">
+    <h1><span class="icon">&#128131;</span> Mia第一周康复方案</h1>
+    <div class="date-info" id="headerDate"></div>
+  </div>
+
+  <!-- Navigation -->
+  <div class="nav-bar">
+    <div class="nav-item active" data-page="today" onclick="switchPage('today')">今日训练</div>
+    <div class="nav-item" data-page="release" onclick="switchPage('release')">肌肉松解</div>
+    <div class="nav-item" data-page="progress" onclick="switchPage('progress')">进度</div>
+    <div class="nav-item" data-page="posture" onclick="switchPage('posture')">体态</div>
+    <div class="nav-item" data-page="settings" onclick="switchPage('settings')">设置</div>
+  </div>
+
+  <!-- Today Page -->
+  <div class="page active" id="page-today">
+    <div class="streak-banner">
+      <div>
+        <div class="streak-num" id="streakNum">0</div>
+        <div class="streak-label">连续打卡天数</div>
+      </div>
+      <div class="streak-icon">&#128150;</div>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-value" id="todayDone">0/9</div>
+        <div class="stat-label">今日完成</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="weekDays">0</div>
+        <div class="stat-label">本周打卡</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="currentStreak">0</div>
+        <div class="stat-label">当前连续</div>
+      </div>
+    </div>
+
+    <div id="todayModules"></div>
+
+    <div class="total-progress">
+      <div class="progress-label">
+        <span>今日总进度</span>
+        <span id="progressText">0%</span>
+      </div>
+      <div class="progress-bar-bg">
+        <div class="progress-bar-fill" id="progressBar" style="width:0%"></div>
+      </div>
+    </div>
+
+    <div id="completionMsg" style="display:none" class="completion-msg">
+      <div class="big-emoji">&#127881;</div>
+      <h3>今日康复训练全部完成！</h3>
+      <p>坚持就是胜利，你的身体正在变得更好！</p>
+    </div>
+  </div>
+
+  <!-- Muscle Release Page -->
+  <div class="page" id="page-release">
+    <div class="release-intro-card">
+      <h3>为什么先松解？</h3>
+      <p>酸痛的肌肉往往是「受害者」，真正缩短僵硬的往往是它的反方向肌肉。比如后背和脖子酸痛，首要松解的是前侧的胸大肌和斜角肌。</p>
+      <p class="release-tip-text">安全的松解只是清除了身体的「路障」，松解完毕后配合背部力量激活，才能恢复舒适。</p>
+    </div>
+    <div id="releaseContent"></div>
+  </div>
+
+  <!-- Progress Page -->
+  <div class="page" id="page-progress">
+    <div class="calendar-section">
+      <div class="calendar-header">
+        <h3 id="calendarTitle">打卡日历</h3>
+        <div class="calendar-nav">
+          <button onclick="changeMonth(-1)">&#8249;</button>
+          <button onclick="changeMonth(1)">&#8250;</button>
+        </div>
+      </div>
+      <div class="calendar-grid" id="calendarGrid"></div>
+    </div>
+
+    <div class="week-chart-section">
+      <h3>本周完成率</h3>
+      <div class="week-chart" id="weekChart"></div>
+    </div>
+
+    <div class="cumulative-section">
+      <h3>累计统计</h3>
+      <div class="cumulative-grid" id="cumulativeGrid"></div>
+    </div>
+
+    <div class="module-stats-section">
+      <h3>各模块完成率</h3>
+      <div id="moduleStats"></div>
+    </div>
+  </div>
+
+
+  <!-- Posture Page -->
+  <div class="page" id="page-posture">
+    <div class="posture-header">
+      <div class="posture-title">日常颈椎体态管理</div>
+      <div class="posture-summary">
+        <span class="posture-icon">💡</span>
+        <span>头顶悬线 + 鼻尖稍稍上扬 + 肩沉胛收 + 核心收紧</span>
+      </div>
+    </div>
+    <div id="posture-list" class="posture-list"></div>
+    <div class="posture-tips">
+      <div class="tips-title">🎯 核心原则</div>
+      <div class="tips-content">
+        <p><strong>头颈中立位：</strong>耳朵在肩膀正上方，下巴微收（为了不让上颈椎折叠），鼻尖稍上扬（保持生理曲线），后脑勺向上轻轻延伸。</p>
+        <p>出现脖子前侧发紧、后脑勺胀痛、手指麻木时，立即停止当前姿势，做深呼吸调整。</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Settings Page -->
+  <div class="page" id="page-settings">
+      <!-- Reminder Settings -->
+  <div class="reminder-section">
+    <h3>&#128276; 定时提醒</h3>
+    <div class="reminder-toggle">
+      <div>
+        <div class="reminder-toggle-label">开启定时提醒</div>
+        <div class="reminder-toggle-desc">页面可见时提醒您定时活动颈部</div>
+      </div>
+      <label class="toggle">
+        <input type="checkbox" id="reminderEnabled" onchange="toggleReminder()">
+        <span class="toggle-slider"></span>
+      </label>
+    </div>
+    <div id="reminderOptions" style="display:none;">
+      <div class="reminder-toggle">
+        <div>
+          <div class="reminder-toggle-label">提醒间隔</div>
+          <div class="reminder-toggle-desc">选择适合您的活动频率</div>
+        </div>
+      </div>
+      <div class="reminder-interval">
+        <button class="reminder-interval-btn active" id="btn30" onclick="setReminderInterval(30)">30分钟</button>
+        <button class="reminder-interval-btn" id="btn60" onclick="setReminderInterval(60)">60分钟</button>
+      </div>
+      <div class="reminder-toggle" style="margin-top:10px;">
+        <div>
+          <div class="reminder-toggle-label">提示音</div>
+          <div class="reminder-toggle-desc">提醒时播放声音</div>
+        </div>
+        <label class="toggle">
+          <input type="checkbox" id="reminderSound" checked onchange="saveReminderSettings()">
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+      <div class="reminder-toggle">
+        <div>
+          <div class="reminder-toggle-label">震动</div>
+          <div class="reminder-toggle-desc">提醒时震动（设备支持时）</div>
+        </div>
+        <label class="toggle">
+          <input type="checkbox" id="reminderVibrate" checked onchange="saveReminderSettings()">
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+      <div class="reminder-status" id="reminderStatus">
+        下次提醒：未开启
+      </div>
+    </div>
+  </div>
+
+<div class="settings-section">
+      <h3>&#11088; 重点动作</h3>
+      <div id="starredList" class="starred-exercise-list"></div>
+    </div>
+
+    <div class="settings-section">
+      <h3>&#128221; 动作顺序调整</h3>
+      <p style="font-size:12px;color:var(--text-muted);margin-bottom:8px;">选择模块后调整动作顺序</p>
+      <div id="reorderModuleSelect" style="margin-bottom:10px;">
+        <select id="reorderSelect" onchange="renderReorderList()" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:14px;background:var(--card);outline:none;">
+          <option value="0">模块1：呼吸与自律神经安抚</option>
+          <option value="1">模块2：神经安全滑动减压</option>
+          <option value="2">模块3：颈椎深层加固</option>
+          <option value="3">模块4：体态纠正与支架重塑</option>
+          <option value="4">模块5：前庭与平衡重塑</option>
+        </select>
+      </div>
+      <div id="reorderList" class="reorder-list"></div>
+    </div>
+
+    <div class="sync-tip-card">
+      <div class="sync-tip-title">跨设备使用</div>
+      <div class="sync-tip-content">
+        <div class="sync-tip-row">Mac → iPhone：导出数据 → AirDrop/微信发送 → iPhone导入</div>
+        <div class="sync-tip-row">iPhone → Mac：导出数据 → AirDrop/微信发送 → Mac导入</div>
+        <div class="sync-tip-row sync-tip-highlight">建议每天训练后导出一次，换设备时导入即可</div>
+      </div>
+    </div>
+
+    <div class="settings-section">
+      <h3>&#128190; 数据管理</h3>
+      <div class="setting-item">
+        <div>
+          <div class="setting-label">导出数据</div>
+          <div class="setting-desc">将打卡记录导出为JSON文件</div>
+          <div id="lastExportInfo" class="setting-time-info" style="display:none;"></div>
+        </div>
+        <button class="btn btn-secondary" onclick="exportData()" style="flex:none;padding:8px 16px;">导出</button>
+      </div>
+      <div class="setting-item">
+        <div>
+          <div class="setting-label">导入数据</div>
+          <div class="setting-desc">从JSON文件恢复打卡记录</div>
+          <div id="lastImportInfo" class="setting-time-info" style="display:none;"></div>
+        </div>
+        <button class="btn btn-secondary" onclick="document.getElementById('importFile').click()" style="flex:none;padding:8px 16px;">导入</button>
+        <input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(event)">
+      </div>
+      <div class="setting-item">
+        <div>
+          <div class="setting-label">重置所有数据</div>
+          <div class="setting-desc">清除所有打卡记录和设置</div>
+        </div>
+        <button class="btn btn-danger" onclick="showConfirm('确定要重置所有数据吗？此操作不可恢复。', resetAllData)" style="flex:none;padding:8px 16px;">重置</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Exercise Detail Modal -->
+<div class="modal-overlay" id="exerciseModal" onclick="closeModalOutside(event)">
+  <div class="modal-sheet" id="modalSheet">
+    <div class="modal-handle"></div>
+    <div class="modal-content" id="modalContent"></div>
+  </div>
+</div>
+
+<!-- Import Modal -->
+<div class="modal-overlay" id="importModal" onclick="if(event.target===this)hideImportModal()">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-content" id="importModalContent"></div>
+  </div>
+</div>
+
+<!-- Confirm Dialog -->
+<div class="confirm-overlay" id="confirmOverlay">
+  <div class="confirm-box">
+    <h4 id="confirmTitle">确认</h4>
+    <p id="confirmMsg"></p>
+    <div class="btn-row">
+      <button class="btn btn-secondary" onclick="hideConfirm()">取消</button>
+      <button class="btn btn-danger" id="confirmOk" onclick="confirmAction()">确定</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ==================== DATA ====================
+const EXERCISES_DATA = [
+  {
+    id:'A040', module:0, name:'平躺慢吐气沉胸', subtitle:'仰卧平躺，屈膝双脚踩实，后脑勺垫硬皮书或薄毛巾卷',
+    sets:'慢速呼吸 6~8 次为一组（约 2 分钟）。连续做 5 组。', difficulty:'中等',
+    steps:['鼻子轻轻吸气4秒，感受气体平铺进后背和肚子，前胸完全不用力。2. 嘴唇嘟起像吹口哨，极慢极长地呼气8秒，感受前胸下沉。3. 体会副交感神经激活带来的全身放松感。'],
+    tips:'吸气时严禁出现耸肩或锁骨周围肌肉紧张。长呼气和屏气时不要憋到面红耳赤，去体会副交感神经激活带来的全身发热感和心率平稳平台期。'
+  },
+  {
+    id:'A017', module:1, name:'仰卧双肘微屈贴床压肩胛', subtitle:'仰卧平躺，后脑勺垫硬皮书或薄毛巾卷',
+    sets:'2组×12次', difficulty:'中等',
+    steps:['平躺仰卧屈膝踩实，双臂下垂身体两侧。','保持上臂前臂手背完全贴紧床面。','驱动后背双侧肩胛骨，慢速向内侧向下半身收紧移动。','感觉两侧肩胛骨向脊柱中线靠拢挤压，双肩前侧打开，最大收紧点维持5秒。'],
+    tips:'双臂严禁抬高、耸肩或外展超30度。保持低位贴床，排除高举诱发神经卡压，安全激活后背中下肌群。'
+  },
+  {
+    id:'A020', module:1, name:'坐姿低位双手沉掌心前延展', subtitle:'椅子端坐，脊柱自然挺立，腰椎微翘贴住椅子靠背。双臂自然下垂在身体两侧。',
+    sets:'每次低位延展维持6秒。8次为一组，每日重复2组。', difficulty:'中等',
+    steps:['双臂在外展角度低于20度的低斜下方平面，平缓将手腕向上勾起，使双侧掌心完全朝向正前方，十指笔直指向地面。2. 保持微收下巴、头颈部中立固定。3. 驱使双侧手掌连同手臂平行向地面慢速下压延展，最低点维持6秒。4. 体会脖子根部至手指的牵拉感。'],
+    tips:'手臂下压平面严禁抬高。此动作旨在滑动并降低前侧神经根与臂丛的物理张力。若勾手腕下压时手指尖或左臂出现急性电击样麻木加剧，需立刻减小手腕上勾的角度。'
+  },
+  {
+    id:'A022', module:2, name:'平躺吸舌收下巴', subtitle:'仰卧平躺，屈膝双脚踩实，后脑勺垫硬皮书或薄毛巾卷',
+    sets:'3组×10次', difficulty:'中等',
+    steps:['完全平躺仰卧，双腿屈膝踩实床面，后脑勺下方托垫2-3厘米硬皮书。','紧闭双唇，整片舌头平铺吸吮在口腔上腭，体会喉结向上提缩。','保持舌头吸住，双眼视线向下看脚尖，下巴平行向后收缩2毫米。','感觉后脑勺与书本产生轻微接触压迫，维持10秒后平缓释放。'],
+    tips:'脖子前侧胸锁乳突肌必须保持松软，严禁发硬。若吞咽受阻或左臂麻木，需减小下巴收缩幅度。'
+  },
+  {
+    id:'A043', module:3, name:'平躺定头极限看右下再看左下', subtitle:'仰卧平躺，屈膝双脚踩实，后脑勺垫硬皮书或薄毛巾卷',
+    sets:'左右各45秒/次，每日2组', difficulty:'中等',
+    steps:['平躺仰卧屈膝，后脑勺垫硬皮书，头颈身体保持绝对静止。','保持头颈固定，双眼球慢速匀速向右下角移动，锁死视线边缘。','视线到达极限后保持锁定，进行3次深长鼻吸嘴呼。','呼气时体会左侧后脑勺深层肌肉被动拉长，然后慢速转回正中位放松。','右侧完成后，双眼球慢速匀速向左下角移动，锁死视线边缘，保持锁定进行3次深长鼻吸嘴呼。呼气时体会右侧后脑勺深层肌肉被动拉长，然后慢速转回正中位放松。'],
+    tips:'头颅和鼻子必须保持固定，面部绝不准跟随眼球旋转。依靠眼颈反射为枕下软组织降张力。'
+  },
+  {
+    id:'A044', module:3, name:'眼神死锁微动摇点脑', subtitle:'仰卧平躺，屈膝双脚踩实，后脑勺垫硬皮书或薄毛巾卷',
+    sets:'2组×10次', difficulty:'中等',
+    steps:['平躺仰卧屈膝，后脑勺垫硬皮书，左手拇指竖在眼睛上方30厘米。','双眼视线汇聚死死盯着拇指指甲盖，整个训练保持聚焦。','保持视线锁定，鼻子面部带着头颅向右侧极慢转动2度（约1厘米）。','再向左侧极慢转动2度，眼球在眼眶内自主反向调整，视线始终不离开目标。'],
+    tips:'头面移动控制在左右各2度以内，严禁大范围晃头。若视线模糊或后脑勺痉挛，需进一步缩小幅度。'
+  },
+  {
+    id:'A047', module:3, name:'平躺双指眼球追踪', subtitle:'仰卧平躺，屈膝双脚踩实，后脑勺垫硬皮书或薄毛巾卷',
+    sets:'左右慢速来回运球一次为一下。8 下/组，连续做 3 组。', difficulty:'中等',
+    steps:['头颅、脖子、躯干和双臂在中立位保持静止。2. 眼神死锁左大拇指。3. 眼球像丝绸般平滑匀速横移至右大拇指，用时4秒。4. 定格1秒后，4秒慢速移回左拇指。'],
+    tips:'头颅和鼻子绝不准跟随眼神乱晃。眼神移动必须连贯，严禁出现一跳一跳的断开感。若出现任何虚焦、重影或心里恶心，立刻缩窄两手之间的距离。'
+  }
+];
+
+
+const RELEASE_DATA = [
+  {
+    category: "一、头晕头痛的罪魁祸首",
+    icon: "&#129504;",
+    items: [
+      {
+        muscle: "枕下肌群",
+        symptom: "头晕发懵、空间失真感（一转头就晕）、后脑勺连着头皮发紧",
+        find: "顺着后脑勺正中向下摸，会摸到一块坚硬的骨头边缘。手指越过这块骨头边缘，刚滑入脖子软肉的深坑凹陷处就是。用大拇指在这个骨头下方的两侧深坑里往上顶着按，找对位置时，会有一阵直冲头顶的酸胀感。",
+        release: "<strong>眼-颈反射法：</strong>绝对不能大力揉捏或大角度扭脖子。仰卧平躺，后脑勺凹陷处垫一本硬书（包上毛巾），保持头部绝对静止。闭上眼睛，让眼球缓慢向上下左右四个极限方向转动，配合深呼吸。利用动眼神经与枕下肌群的绑定反射，通过转动眼球就能隔空让这块肌肉放松。"
+      },
+      {
+        muscle: "胸锁乳突肌",
+        symptom: "不明原因的旋转性头晕、恶心、耳鸣、眼眶后方胀痛，以及经常性落枕",
+        find: "对着镜子，把头用力转向左侧。此时脖子右前方会立刻暴起一条像粗绳子一样的肌肉。顺着耳后根的硬骨头往下捏，它一直斜向连到胸前锁骨的内侧端，整条肌肉非常容易捏住。",
+        release: "<strong>缺血性按压法：</strong>保持颈椎正立。用拇指和食指轻轻捏住这条肌肉的中段或下段，寻找里面的硬结或痛点。捏住痛点保持中等力度按压30-60秒（你会感觉酸痛向头面部放散），随后松开。这种短暂缺血后的反应性充血，能瞬间冲走炎性物质。"
+      },
+      {
+        muscle: "夹肌群与半棘肌",
+        symptom: "深层颈痛，疼痛直接顺着脖子窜到头顶，引发严重的紧张性头痛或后脑勺痛",
+        find: "先微微低头，摸到脖子正后方最突出的那排骨节（颈椎棘突）。顺着这排骨节向左或向右移开约一到两根手指的宽度。然后把头微微抬起，用手指在这个区域轻轻横向拨动，能摸到像粗筋一样的条索状硬块，这就是劳损的夹肌。",
+        release: "<strong>静态微抗阻：</strong>平躺在床上，颈部保持中立。用双手十指交叉托住后脑勺，头部向后（向床垫方向）发力，双手同时向前发力抵抗。头部保持不产生任何位移，持续静力对抗6-10秒。这能通过神经自体抑制机制，让深层痉挛的肌肉自动放松。"
+      },
+      {
+        muscle: "寰枢椎松解",
+        symptom: "颈部旋转受限，转头时感觉僵硬或有阻力",
+        find: "先低头，然后向两侧慢慢旋转，找到旋转幅度较小、感觉更僵硬的那一侧。",
+        release: "<strong>眼颈协调法：</strong>用一只手轻轻扶住与受限侧同方向的后颈部，起到轻微固定的作用。将头部缓慢转向受限的一侧，直到感觉有阻力无法继续转动。保持这个姿势，眼睛看向另一侧（与头部转动方向相反）。然后再将眼睛转回与头部相同的方向，同时尝试继续转动头部。如此重复3次。"
+      }
+    ]
+  },
+  {
+    category: "二、手麻肩沉的幕后黑手",
+    icon: "&#128170;",
+    items: [
+      {
+        muscle: "斜角肌",
+        symptom: "手臂和手指发麻（放射痛）、早上醒来手部胀痛，或者总是觉得胸闷气短",
+        find: "位于脖子前外侧，在胸锁乳突肌和斜方肌之间。顺着锁骨上方的凹陷处向深处摸，能拨动到像琴弦一样的条索。按压它时，经常会有向手臂放射的酸麻胀感。",
+        release: "<strong>定点滑压：</strong>切忌歪着脖子硬拉！保持头部正立面对前方，用对侧的中指按在锁骨上方的斜角肌痛点上，手指施加向下、向第一肋骨方向的沉重压力，持续下压拖拽，配合缓慢的深长呼吸（腹式呼吸），让肌肉随着胸廓的下降自然拉长。"
+      },
+      {
+        muscle: "斜方肌上束与肩胛提肌",
+        symptom: "肩膀沉重、颈肩交界处剧痛、连带着肩胛骨内上角酸痛无力",
+        find: "上斜方肌极好找，就是你脖子和肩膀交界处最厚、最容易被人捏的那块肌肉。肩胛提肌藏在它下面，顺着脖子侧方往下摸，一直摸到后背肩胛骨靠近脊柱最上方的那个尖角。当你落枕时，这个尖角处通常会有一个极度敏感的剧痛硬结。",
+        release: "<strong>筋膜球深压：</strong>抛弃极度侧屈脖子的拉伸法。找一个网球或硬质筋膜球，身体靠墙，将球压在肩颈交界处或肩胛骨内上角的最痛点上。身体施加压力，保持脖子不动，持续按压该点1-2分钟，直到酸痛感逐渐消散。"
+      }
+    ]
+  },
+  {
+    category: "三、圆肩驼背的力学元凶",
+    icon: "&#127981;",
+    items: [
+      {
+        muscle: "胸大肌与胸小肌",
+        symptom: "圆肩、驼背、脖子被迫前伸（探颈）。当前胸缩短时，不仅会引发手臂发麻，还会让后背的肌肉天天处于被强行拉长的酸痛状态",
+        find: "胸大肌就是我们常说的胸肌，覆盖整个前胸浅层。寻找深处的胸小肌时：用手摸到对侧锁骨最外侧，稍微向下一两寸（靠近肩膀前方的凹窝处）。当你刻意做一个含胸动作时，用两根手指往凹窝深处用力按压，会感到一阵直达肩背的强烈酸痛，那里就是紧张的胸小肌。",
+        release: "<strong>门框杠杆法：</strong>找一个门框，双手手肘弯曲90度，小臂贴在门框两侧，双脚一前一后站立。身体保持笔直，利用自身的重力缓慢向前倾斜，直到感觉胸前肌肉有温和的拉伸感。保持15-30秒。这个动作完全不需要颈椎参与，是最安全的底座解锁法。"
+      }
+    ]
+  },
+  {
+    category: "四、颈肩联动的隐藏盲区",
+    icon: "&#128204;",
+    items: [
+      {
+        muscle: "冈上肌、冈下肌与大小圆肌",
+        symptom: "感觉颈椎痛连带着肩膀里面痛，胳膊抬举受限，很多人误以为自己得了肩周炎",
+        find: "反手摸到自己后背那块三角形的骨头（肩胛骨）。这块骨头中间有一条横向凸起的骨棱（肩胛冈）。在这条骨棱上方的浅坑里就是冈上肌；骨棱下方广阔的平坦区域是冈下肌；顺着肩胛骨靠外侧边缘（靠近腋窝后方）往下摸，就是大小圆肌。",
+        release: "<strong>定点揉压：</strong>侧躺或靠墙，用网球压在肩胛骨背面的酸痛结节上，用身体重量进行定点持续按压。同时可以缓慢地做手臂的内外旋微小动作，让肌肉在按压下产生滑动松解。"
+      }
+    ]
+  }
+];
+
+const MODULES = [
+  { name:'呼吸与自律神经安抚--缓解心慌胸闷', subtitle:'呼吸安抚', icon:'&#127808;', colorClass:'m1' },
+  { name:'神经安全滑动减压--缓解手麻串痛', subtitle:'神经减压', icon:'&#129504;', colorClass:'m2' },
+  { name:'颈椎深层加固--拯救摇晃无力', subtitle:'深层稳定', icon:'&#128170;', colorClass:'m3' },
+  { name:'前庭与平衡重塑--缓解头晕发懵', subtitle:'前庭重塑', icon:'&#128065;', colorClass:'m5' }
+];
+
+// ==================== STATE ====================
+
+window.POSTURE_DATA = {
+  items: [
+    { id: 1, title: "抬头", keyPoint: "胸椎协同头部一起往上抬", detail: "寰枢椎上下活动度只有约10度，其余需要下颈椎段+胸椎协同。颈椎病人下颈椎段常反弓/椎间盘突出，胸椎需代偿更多。", error: "只动脖子抬头，胸椎不参与", correct: "想象头顶有绳子向上提拉，胸椎协同伸展", icon: "⬆️" },
+    { id: 2, title: "低头", keyPoint: "收下巴低头，中下颈椎段不动", detail: "把东西推到桌子更远的地方，用眼球向下看。视力不好配眼镜，不要伸头凑近。洗澡时让水往头冲，不要低头让水冲脖子。", error: "直接低头60度，颈椎承受巨大压力", correct: "收下巴，用眼睛往下看，保持颈椎中立", icon: "⬇️" },
+    { id: 3, title: "大幅低头场景", keyPoint: "屈髋，后背和脖子一条直线一起低下去", detail: "桌上/床上找东西、洗脸刷牙洗碗等场景。错误方式：仅低头、弯腰不弯腿。正确方式：屈髋，脊柱保持中立位整体前倾。", error: "只低头弯腰，腰椎和颈椎都受压", correct: "屈髋屈膝，脊柱整体前倾保持中立", icon: "🔽" },
+    { id: 4, title: "左右转头", keyPoint: "先用眼睛转，再带动头往左右转", detail: "避免直接甩头。先用眼球转向目标方向，再带动头部缓慢转动，给前庭系统适应时间。", error: "快速甩头，前庭系统来不及适应", correct: "眼睛先看向目标，再缓慢转头", icon: "↔️" },
+    { id: 5, title: "看手机", keyPoint: "手机放在锁骨高度，收下巴低头", detail: "不要低头60度看手机（颈椎承受约27公斤压力）。将手机举到锁骨高度，配合收下巴低头的姿势，用眼睛向下看。", error: "低头60度看手机，颈椎承受巨大压力", correct: "手机举到锁骨高度，收下巴用眼看", icon: "📱" },
+    { id: 6, title: "电脑办公", keyPoint: "字体调大，屏幕和视线持平", detail: "字体调大避免头前倾找字。屏幕上沿与视线平齐，不要过高（会导致上颈段折叠）或过低。", error: "屏幕过低或字体太小，被迫伸头", correct: "屏幕与视线平齐，字体调大", icon: "💻" },
+    { id: 7, title: "大屏办公", keyPoint: "屏幕和视线持平即可", detail: "常见误区：不要因为之前低头多就把屏幕垫过高。正确方式：屏幕与视线持平，保持头颈中立位。", error: "屏幕垫得过高，上颈段过度后仰", correct: "屏幕与视线持平，保持中立", icon: "🖥️" },
+    { id: 8, title: "睡觉", keyPoint: "首选仰卧", detail: "首选仰卧位。侧睡通常是一侧肌肉紧张导致，需要配合松解和锻炼恢复平衡。枕头高度以颈椎自然曲度为准，不宜过高或过低。", error: "枕头过高或过低，侧睡姿势不当", correct: "仰卧为主，枕头高度适中支撑颈椎", icon: "🛏️" },
+    { id: 9, title: "起床/躺下", keyPoint: "用手撑起身体，不要用脖子发力", detail: "避免用头抵着床蹭、脖子发力换位置。正确方式：用手支撑身体移动，保持头颈中立。起床时先侧身，用手撑起上半身。", error: "用头抵床蹭，脖子发力起身", correct: "用手支撑，侧身起床", icon: "🔄" },
+    { id: 10, title: "电视/沙发", keyPoint: "后背完全靠住，脖子不悬空", detail: "后背完全靠住靠背，腰部有支撑。半躺时用颈枕支撑颈部，避免脖子悬空。", error: "脖子悬空无支撑", correct: "后背贴靠，颈枕支撑", icon: "🛋️" },
+    { id: 11, title: "日常行走", keyPoint: "头顶悬线 + 鼻尖微扬 + 肩沉胛收 + 核心收紧", detail: "想象头顶有绳子向上提拉，鼻尖略高于水平线（不能多），肩膀下沉肩胛轻收，腹部核心微收紧。", error: "含胸驼背，头前伸", correct: "头顶向上，肩沉胛收，核心收紧", icon: "🚶" }
+  ]
+};
+
+const STORAGE_KEY = 'mia_week1';
+const REMINDER_KEY = 'mia_reminder';
+const EXPORT_PREFIX = 'Mia第一周康复数据';
+
+let state = {
+  completedDates: {},
+  starred: [],
+  notes: {},
+  exerciseOrder: {   0: null,   1: null,   2: null,   3: null,   4: null },
+  calendarMonth: new Date().getMonth(),
+  calendarYear: new Date().getFullYear(),
+  lastExportTime: null,
+  lastImportTime: null
+};
+
+function loadState() {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY + '_state');
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      state = { ...state, ...parsed };
+    }
+  } catch(e) { console.error('Failed to load state', e); }
+}
+
+function saveState() {
+  try {
+    localStorage.setItem(STORAGE_KEY + '_state', JSON.stringify(state));
+  } catch(e) { console.error('Failed to save state', e); }
+}
+
+// ==================== UTILS ====================
+function todayKey() {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+
+function getTodayCompleted() {
+  return state.completedDates[todayKey()] || {};
+}
+
+function setTodayCompleted(exId, val) {
+  if (!state.completedDates[todayKey()]) state.completedDates[todayKey()] = {};
+  state.completedDates[todayKey()][exId] = val;
+  saveState();
+}
+
+function getAllExerciseIds() {
+  return EXERCISES_DATA.map(e => e.id);
+}
+
+function getModuleExercises(moduleIdx) {
+  const order = state.exerciseOrder[moduleIdx];
+  const moduleExercises = EXERCISES_DATA.filter(e => e.module === moduleIdx);
+  if (order) {
+    const ordered = [];
+    order.forEach(id => {
+      const found = moduleExercises.find(e => e.id === id);
+      if (found) ordered.push(found);
+    });
+    moduleExercises.forEach(e => {
+      if (!order.includes(e.id)) ordered.push(e);
+    });
+    return ordered;
+  }
+  return moduleExercises;
+}
+
+function formatDate(d) {
+  const days = ['日','一','二','三','四','五','六'];
+  return `${d.getFullYear()}年${d.getMonth()+1}月${d.getDate()}日 星期${days[d.getDay()]}`;
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2000);
+}
+
+let confirmCallback = null;
+function showConfirm(msg, cb) {
+  document.getElementById('confirmMsg').textContent = msg;
+  document.getElementById('confirmOverlay').classList.add('show');
+  confirmCallback = cb;
+}
+function hideConfirm() {
+  document.getElementById('confirmOverlay').classList.remove('show');
+  confirmCallback = null;
+}
+function confirmAction() {
+  if (confirmCallback) confirmCallback();
+  hideConfirm();
+}
+
+// ==================== NAVIGATION ====================
+
+
+// ==================== RELEASE PAGE ====================
+function renderRelease() {
+  const container = document.getElementById('releaseContent');
+  if (!container) return;
+  container.innerHTML = '';
+
+  RELEASE_DATA.forEach(function(section) {
+    section.items.forEach(function(item) {
+      var headerId = 'rel-' + section.category.replace(/[^a-zA-Z0-9\u4e00-\u9fff]/g,'') + '-' + item.muscle;
+      var secEl = document.createElement('div');
+      secEl.className = 'release-section';
+      secEl.innerHTML = 
+        '<div class="release-section-header" onclick="toggleReleaseItem(' + "'" + headerId + "'" + ')">' +
+          '<h4><span>' + section.icon + '</span> ' + section.category + ' - ' + item.muscle + '</h4>' +
+          '<span class="rs-arrow">&#9660;</span>' +
+        '</div>' +
+        '<div class="release-item-body" id="' + headerId + '">' +
+          '<div class="release-symptom">对应症状：' + item.symptom + '</div>' +
+          '<div class="release-find"><strong>如何寻找：</strong>' + item.find + '</div>' +
+          '<div class="release-method">' + item.release + '</div>' +
+        '</div>';
+      container.appendChild(secEl);
+    });
+  });
+}
+
+function toggleReleaseItem(id) {
+  var body = document.getElementById(id);
+  if (!body) return;
+  var header = body.previousElementSibling;
+  var isOpen = body.classList.contains('open');
+  if (isOpen) {
+    body.classList.remove('open');
+    header.classList.remove('expanded');
+  } else {
+    body.classList.add('open');
+    header.classList.add('expanded');
+  }
+}
+
+
+function renderPostureList() {
+  const list = document.getElementById('posture-list');
+  if (!list || !window.POSTURE_DATA || !window.POSTURE_DATA.items) return;
+  list.innerHTML = window.POSTURE_DATA.items.map(item => `
+    <div class="posture-item" data-id="${item.id}">
+      <div class="posture-item-header">
+        <span class="posture-item-icon">${item.icon}</span>
+        <span class="posture-item-title">${item.title}</span>
+        <span class="posture-item-arrow">▼</span>
+      </div>
+      <div class="posture-item-content">
+        <div class="posture-keypoint">${item.keyPoint}</div>
+        <div class="posture-detail">${item.detail}</div>
+        ${item.error ? '<div class="posture-error">❌ 错误：'+item.error+'</div>' : ''}
+        ${item.correct ? '<div class="posture-correct">✅ 正确：'+item.correct+'</div>' : ''}
+      </div>
+    </div>
+  `).join('');
+  list.querySelectorAll('.posture-item-header').forEach(header => {
+    header.addEventListener('click', () => {
+      const item = header.parentElement;
+      item.classList.toggle('expanded');
+      header.querySelector('.posture-item-arrow').textContent = item.classList.contains('expanded') ? '▲' : '▼';
+    });
+  });
+}
+
+function switchPage(page) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('page-' + page).classList.add('active');
+  document.querySelector(`.nav-item[data-page="${page}"]`).classList.add('active');
+
+  if (page === 'progress') renderProgress();
+  if (page === 'posture') renderPostureList();
+  if (page === 'settings') renderSettings();
+  if (page === 'release') renderRelease();
+  if (page === 'today') renderToday();
+}
+
+// ==================== TODAY PAGE ====================
+function renderToday() {
+  document.getElementById('headerDate').textContent = formatDate(new Date());
+
+  const completed = getTodayCompleted();
+  const totalExercises = getAllExerciseIds().length;
+  const doneCount = Object.values(completed).filter(Boolean).length;
+
+  document.getElementById('todayDone').textContent = `${doneCount}/${totalExercises}`;
+  document.getElementById('weekDays').textContent = getWeekCompletedDays();
+  document.getElementById('streakNum').textContent = getCurrentStreak();
+  document.getElementById('currentStreak').textContent = getCurrentStreak();
+
+  const pct = Math.round((doneCount / totalExercises) * 100);
+  document.getElementById('progressText').textContent = `${pct}%`;
+  document.getElementById('progressBar').style.width = pct + '%';
+
+  document.getElementById('completionMsg').style.display = doneCount === totalExercises ? 'block' : 'none';
+
+  const container = document.getElementById('todayModules');
+  container.innerHTML = '';
+
+  MODULES.forEach((mod, mi) => {
+    const exercises = getModuleExercises(mi);
+    const moduleDone = exercises.filter(e => completed[e.id]).length;
+    const moduleTotal = exercises.length;
+    const isComplete = moduleDone === moduleTotal;
+
+    const section = document.createElement('div');
+    section.className = 'module-section';
+    section.innerHTML = `
+      <div class="module-header" onclick="toggleModule(this)">
+        <div class="module-icon ${mod.colorClass}">${mod.icon}</div>
+        <div class="module-title">
+          <h3>${mod.name}</h3>
+          <div class="module-progress">${moduleDone}/${moduleTotal} 已完成</div>
+        </div>
+        ${isComplete ? '<span class="module-complete-badge">&#10003; 已完成</span>' : ''}
+        <span class="module-arrow open">&#9660;</span>
+      </div>
+      <div class="exercise-list">
+        ${exercises.map(ex => {
+          const isDone = !!completed[ex.id];
+          const isStarred = state.starred.includes(ex.id);
+          const hasNote = !!state.notes[ex.id];
+          return `
+            <div class="exercise-item ${isDone ? 'completed' : ''} ${isStarred ? 'starred' : ''}">
+              <div class="exercise-checkbox ${isDone ? 'checked' : ''}" onclick="event.stopPropagation();toggleExercise('${ex.id}')">
+                ${isDone ? '&#10003;' : ''}
+              </div>
+              <div class="exercise-info" onclick="showExerciseDetail('${ex.id}')">
+                <div class="exercise-name">${isStarred ? '&#11088; ' : ''}${ex.name}</div>
+                <div class="exercise-meta">${ex.subtitle} | ${ex.sets}</div>
+              </div>
+              ${hasNote ? '<span class="exercise-note-icon" onclick="event.stopPropagation();showExerciseDetail(\''+ex.id+'\')">&#128221;</span>' : ''}
+              <span class="exercise-star ${isStarred ? 'active' : ''}" onclick="event.stopPropagation();toggleStar('${ex.id}')">${isStarred ? '&#11088;' : '&#9734;'}</span>
+            </div>
+          `;
+        }).join('')}
+      </div>
+    `;
+    container.appendChild(section);
+  });
+}
+
+function toggleExercise(exId) {
+  const completed = getTodayCompleted();
+  const newVal = !completed[exId];
+  setTodayCompleted(exId, newVal);
+  renderToday();
+  if (newVal) {
+    const doneCount = Object.values(getTodayCompleted()).filter(Boolean).length;
+    if (doneCount === getAllExerciseIds().length) {
+      showToast('恭喜！今日训练全部完成！');
+    }
+  }
+}
+
+function toggleModule(header) {
+  const list = header.nextElementSibling;
+  const arrow = header.querySelector('.module-arrow');
+  if (list.style.display === 'none') {
+    list.style.display = 'block';
+    arrow.classList.add('open');
+  } else {
+    list.style.display = 'none';
+    arrow.classList.remove('open');
+  }
+}
+
+function toggleStar(exId) {
+  const idx = state.starred.indexOf(exId);
+  if (idx >= 0) {
+    state.starred.splice(idx, 1);
+    showToast('已取消重点标记');
+  } else {
+    state.starred.push(exId);
+    showToast('已标记为重点动作');
+  }
+  saveState();
+  renderToday();
+}
+
+// ==================== EXERCISE DETAIL MODAL ====================
+function showExerciseDetail(exId) {
+  const ex = EXERCISES_DATA.find(e => e.id === exId);
+  if (!ex) return;
+  const mod = MODULES[ex.module];
+  const note = state.notes[exId] || '';
+
+  document.getElementById('modalContent').innerHTML = `
+    <div class="modal-title">${ex.name}</div>
+    <span class="modal-module-tag ${mod.colorClass}">${mod.icon} ${mod.name}</span>
+    <div class="modal-meta-row">
+      <div class="modal-meta-item">&#128336; ${ex.sets}</div>
+      <div class="modal-meta-item">&#127919; 难度：${ex.difficulty}</div>
+      <div class="modal-meta-item">&#128204; ${ex.subtitle}</div>
+    </div>
+
+    <div class="modal-section-title">&#128221; 详细步骤</div>
+    <ol class="modal-steps">
+      ${ex.steps.map(s => `<li>${s}</li>`).join('')}
+    </ol>
+
+    <div class="modal-section-title">&#9888;&#65039; 温馨提示</div>
+    <div class="modal-tips">${ex.tips}</div>
+
+    <div class="modal-note-area">
+      <div class="modal-section-title">&#128221; 个人笔记</div>
+      <textarea id="noteInput" placeholder="记录你的训练感受、注意事项...">${note}</textarea>
+      <div class="modal-btn-row">
+        <button class="btn btn-secondary" onclick="closeModal()">关闭</button>
+        <button class="btn btn-primary" onclick="saveNote('${exId}')">保存笔记</button>
+      </div>
+    </div>
+  `;
+
+  document.getElementById('exerciseModal').classList.add('show');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  document.getElementById('exerciseModal').classList.remove('show');
+  document.body.style.overflow = '';
+}
+
+function closeModalOutside(e) {
+  if (e.target === document.getElementById('exerciseModal')) {
+    closeModal();
+  }
+}
+
+function saveNote(exId) {
+  const note = document.getElementById('noteInput').value;
+  state.notes[exId] = note;
+  saveState();
+  showToast('笔记已保存');
+  renderToday();
+}
+
+// ==================== LIBRARY PAGE ====================
+function renderLibrary() {
+  const container = document.getElementById('libraryContent');
+  container.innerHTML = '';
+
+  MODULES.forEach((mod, mi) => {
+    const exercises = getModuleExercises(mi);
+    const section = document.createElement('div');
+    section.className = 'library-module';
+    section.innerHTML = `
+      <div class="library-module-title">
+        <span class="module-icon ${mod.colorClass}" style="width:28px;height:28px;font-size:14px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;">${mod.icon}</span>
+        ${mod.name}（${mod.subtitle}）
+      </div>
+      ${exercises.map((ex, idx) => {
+        const isStarred = state.starred.includes(ex.id);
+        return `
+          <div class="library-exercise" onclick="showExerciseDetail('${ex.id}')">
+            <div class="le-num">${idx + 1}</div>
+            <div class="le-info">
+              <div class="le-name">${isStarred ? '&#11088; ' : ''}${ex.name}</div>
+              <div class="le-meta">${ex.subtitle} | ${ex.sets} | ${ex.difficulty}</div>
+            </div>
+            <span class="le-star ${isStarred ? 'active' : ''}" onclick="event.stopPropagation();toggleStarLib('${ex.id}')">${isStarred ? '&#11088;' : '&#9734;'}</span>
+          </div>
+        `;
+      }).join('')}
+    `;
+    container.appendChild(section);
+  });
+}
+
+function toggleStarLib(exId) {
+  const idx = state.starred.indexOf(exId);
+  if (idx >= 0) {
+    state.starred.splice(idx, 1);
+  } else {
+    state.starred.push(exId);
+  }
+  saveState();
+  renderLibrary();
+}
+
+// ==================== PROGRESS PAGE ====================
+function getWeekCompletedDays() {
+  const now = new Date();
+  const dayOfWeek = now.getDay() || 7;
+  let count = 0;
+  for (let i = 1; i <= dayOfWeek; i++) {
+    const d = new Date(now);
+    d.setDate(d.getDate() - dayOfWeek + i);
+    const key = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+    const data = state.completedDates[key];
+    if (data) {
+      const done = Object.values(data).filter(Boolean).length;
+      if (done > 0) count++;
+    }
+  }
+  return count;
+}
+
+function getCurrentStreak() {
+  let streak = 0;
+  const d = new Date();
+  const todayData = state.completedDates[todayKey()];
+  const todayDone = todayData ? Object.values(todayData).filter(Boolean).length : 0;
+
+  if (todayDone === 0) {
+    d.setDate(d.getDate() - 1);
+  }
+
+  while (true) {
+    const key = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+    const data = state.completedDates[key];
+    if (data) {
+      const done = Object.values(data).filter(Boolean).length;
+      if (done > 0) {
+        streak++;
+        d.setDate(d.getDate() - 1);
+      } else {
+        break;
+      }
+    } else {
+      break;
+    }
+  }
+  return streak;
+}
+
+function getLongestStreak() {
+  const dates = Object.keys(state.completedDates).sort();
+  if (dates.length === 0) return 0;
+
+  let longest = 0, current = 0;
+  let prevDate = null;
+
+  dates.forEach(dateStr => {
+    const data = state.completedDates[dateStr];
+    const done = Object.values(data).filter(Boolean).length;
+    if (done === 0) return;
+
+    if (prevDate === null) {
+      current = 1;
+    } else {
+      const prev = new Date(prevDate);
+      const curr = new Date(dateStr);
+      const diff = (curr - prev) / (1000 * 60 * 60 * 24);
+      if (diff === 1) {
+        current++;
+      } else {
+        longest = Math.max(longest, current);
+        current = 1;
+      }
+    }
+    longest = Math.max(longest, current);
+    prevDate = dateStr;
+  });
+
+  return longest;
+}
+
+function getTotalDays() {
+  return Object.keys(state.completedDates).filter(k => {
+    const done = Object.values(state.completedDates[k]).filter(Boolean).length;
+    return done > 0;
+  }).length;
+}
+
+function getTotalExercises() {
+  let total = 0;
+  Object.values(state.completedDates).forEach(data => {
+    total += Object.values(data).filter(Boolean).length;
+  });
+  return total;
+}
+
+function renderProgress() {
+  renderCalendar();
+  renderWeekChart();
+  renderCumulative();
+  renderModuleStats();
+}
+
+function renderCalendar() {
+  const year = state.calendarYear;
+  const month = state.calendarMonth;
+  document.getElementById('calendarTitle').textContent = `${year}年${month + 1}月`;
+
+  const grid = document.getElementById('calendarGrid');
+  grid.innerHTML = '';
+
+  const dayLabels = ['一','二','三','四','五','六','日'];
+  dayLabels.forEach(l => {
+    const el = document.createElement('div');
+    el.className = 'calendar-day-label';
+    el.textContent = l;
+    grid.appendChild(el);
+  });
+
+  const firstDay = new Date(year, month, 1);
+  let startDay = firstDay.getDay() || 7;
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const today = new Date();
+  const totalExercises = getAllExerciseIds().length;
+
+  for (let i = 1; i < startDay; i++) {
+    const el = document.createElement('div');
+    el.className = 'calendar-day empty';
+    grid.appendChild(el);
+  }
+
+  for (let d = 1; d <= daysInMonth; d++) {
+    const el = document.createElement('div');
+    const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const dateObj = new Date(year, month, d);
+    const isToday = dateObj.toDateString() === today.toDateString();
+    const isFuture = dateObj > today;
+
+    let cls = 'calendar-day';
+    if (isToday) cls += ' today';
+
+    if (isFuture) {
+      cls += ' future';
+    } else {
+      const data = state.completedDates[dateStr];
+      if (data) {
+        const done = Object.values(data).filter(Boolean).length;
+        if (done === totalExercises) {
+          cls += ' complete';
+        } else if (done > 0) {
+          cls += ' partial';
+        } else {
+          cls += ' past-empty';
+        }
+      } else if (dateObj < today) {
+        cls += ' past-empty';
+      }
+    }
+
+    el.className = cls;
+    el.textContent = d;
+    grid.appendChild(el);
+  }
+}
+
+function changeMonth(delta) {
+  state.calendarMonth += delta;
+  if (state.calendarMonth > 11) { state.calendarMonth = 0; state.calendarYear++; }
+  if (state.calendarMonth < 0) { state.calendarMonth = 11; state.calendarYear--; }
+  renderCalendar();
+}
+
+function renderWeekChart() {
+  const container = document.getElementById('weekChart');
+  container.innerHTML = '';
+
+  const now = new Date();
+  const dayOfWeek = now.getDay() || 7;
+  const dayNames = ['一','二','三','四','五','六','日'];
+  const totalExercises = getAllExerciseIds().length;
+
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(now);
+    d.setDate(d.getDate() - dayOfWeek + 1 + i);
+    const key = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+    const data = state.completedDates[key];
+    const done = data ? Object.values(data).filter(Boolean).length : 0;
+    const pct = Math.round((done / totalExercises) * 100);
+    const isFuture = d > now;
+
+    const wrap = document.createElement('div');
+    wrap.className = 'week-bar-wrap';
+    wrap.innerHTML = `
+      <div class="week-bar-value">${isFuture ? '-' : pct + '%'}</div>
+      <div class="week-bar ${done > 0 ? 'filled' : ''}" style="height:${isFuture ? 4 : Math.max(4, pct)}px"></div>
+      <div class="week-bar-label">${dayNames[i]}</div>
+    `;
+    container.appendChild(wrap);
+  }
+}
+
+function renderCumulative() {
+  const grid = document.getElementById('cumulativeGrid');
+  grid.innerHTML = `
+    <div class="cumulative-item">
+      <div class="ci-value">${getTotalDays()}</div>
+      <div class="ci-label">总打卡天数</div>
+    </div>
+    <div class="cumulative-item">
+      <div class="ci-value">${getTotalExercises()}</div>
+      <div class="ci-label">总完成动作数</div>
+    </div>
+    <div class="cumulative-item">
+      <div class="ci-value">${getLongestStreak()}</div>
+      <div class="ci-label">最长连续天数</div>
+    </div>
+    <div class="cumulative-item">
+      <div class="ci-value">${getCurrentStreak()}</div>
+      <div class="ci-label">当前连续天数</div>
+    </div>
+  `;
+}
+
+function renderModuleStats() {
+  const container = document.getElementById('moduleStats');
+  container.innerHTML = '';
+
+  const allDates = Object.keys(state.completedDates);
+
+  MODULES.forEach((mod, mi) => {
+    const moduleExIds = EXERCISES_DATA.filter(e => e.module === mi).map(e => e.id);
+    let totalDone = 0;
+    let totalPossible = 0;
+
+    allDates.forEach(dateStr => {
+      const data = state.completedDates[dateStr];
+      if (data) {
+        moduleExIds.forEach(id => {
+          totalPossible++;
+          if (data[id]) totalDone++;
+        });
+      }
+    });
+
+    const pct = totalPossible > 0 ? Math.round((totalDone / totalPossible) * 100) : 0;
+
+    const item = document.createElement('div');
+    item.className = 'module-stat-item';
+    item.innerHTML = `
+      <div class="module-stat-header">
+        <span class="ms-name">${mod.icon} ${mod.name}</span>
+        <span class="ms-pct">${pct}%</span>
+      </div>
+      <div class="module-stat-bar">
+        <div class="module-stat-fill ${mod.colorClass}" style="width:${pct}%"></div>
+      </div>
+    `;
+    container.appendChild(item);
+  });
+}
+
+// ==================== SETTINGS PAGE ====================
+function renderSettings() {
+  const starredList = document.getElementById('starredList');
+  if (state.starred.length === 0) {
+    starredList.innerHTML = '<div class="no-starred">暂无重点动作，在训练清单中点击星标即可添加</div>';
+  } else {
+    starredList.innerHTML = state.starred.map(id => {
+      const ex = EXERCISES_DATA.find(e => e.id === id);
+      if (!ex) return '';
+      return `
+        <div class="starred-exercise-item">
+          <span class="se-star">&#11088;</span>
+          <span style="flex:1">${ex.name}</span>
+          <span style="font-size:12px;color:var(--text-muted)">${ex.subtitle}</span>
+          <button class="btn btn-danger" style="padding:4px 10px;font-size:12px;flex:none;" onclick="removeStar('${id}')">移除</button>
+        </div>
+      `;
+    }).join('');
+  }
+
+  renderReorderList();
+}
+
+function removeStar(id) {
+  state.starred = state.starred.filter(s => s !== id);
+  saveState();
+  renderSettings();
+  showToast('已移除重点标记');
+}
+
+function renderReorderList() {
+  const mi = parseInt(document.getElementById('reorderSelect').value);
+  const exercises = getModuleExercises(mi);
+  const container = document.getElementById('reorderList');
+
+  container.innerHTML = exercises.map((ex, idx) => `
+    <div class="reorder-item" data-id="${ex.id}">
+      <span class="ri-handle">&#9776;</span>
+      <span style="flex:1">${idx + 1}. ${ex.name}</span>
+      <div class="ri-arrows">
+        <button onclick="moveExercise(${mi}, ${idx}, -1)" ${idx === 0 ? 'disabled style="opacity:0.3"' : ''}>&#9650;</button>
+        <button onclick="moveExercise(${mi}, ${idx}, 1)" ${idx === exercises.length - 1 ? 'disabled style="opacity:0.3"' : ''}>&#9660;</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function moveExercise(moduleIdx, fromIdx, direction) {
+  const exercises = getModuleExercises(moduleIdx);
+  const toIdx = fromIdx + direction;
+  if (toIdx < 0 || toIdx >= exercises.length) return;
+
+  const order = exercises.map(e => e.id);
+  [order[fromIdx], order[toIdx]] = [order[toIdx], order[fromIdx]];
+  state.exerciseOrder[moduleIdx] = order;
+  saveState();
+  renderReorderList();
+}
+
+// ==================== DATA MANAGEMENT ====================
+function countTotalDays(cd) {
+  return Object.keys(cd || {}).length;
+}
+function countTotalExercises(cd) {
+  let total = 0;
+  for (const date in (cd || {})) {
+    total += Object.keys(cd[date]).length;
+  }
+  return total;
+}
+
+function buildDefaultOrder() {
+  const order = {};
+  MODULES.forEach((mod, mi) => { order[mi] = null; });
+  return order;
+}
+
+function exportData() {
+  const exportPayload = {
+    _meta: {
+      exportVersion: '1.0',
+      exportDate: new Date().toISOString(),
+      deviceInfo: navigator.userAgent,
+      totalDays: countTotalDays(state.completedDates),
+      totalExercises: countTotalExercises(state.completedDates)
+    },
+    completedDates: state.completedDates,
+    starred: state.starred,
+    notes: state.notes,
+    exerciseOrder: state.exerciseOrder
+  };
+  const data = JSON.stringify(exportPayload, null, 2);
+  const blob = new Blob([data], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  const d = new Date();
+  const dateStr = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  a.download = `${EXPORT_PREFIX}_${dateStr}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  state.lastExportTime = new Date().toISOString();
+  saveState();
+  updateDataManagementInfo();
+  showToast('数据已导出');
+}
+
+function importData(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const rawData = JSON.parse(e.target.result);
+      let importPayload;
+      if (rawData._meta) {
+        importPayload = rawData;
+      } else {
+        importPayload = {
+          _meta: {
+            exportVersion: '0.x',
+            exportDate: null,
+            deviceInfo: null,
+            totalDays: countTotalDays(rawData.completedDates || rawData),
+            totalExercises: countTotalExercises(rawData.completedDates || rawData)
+          },
+          completedDates: rawData.completedDates || rawData,
+          starred: rawData.starred || [],
+          notes: rawData.notes || {},
+          exerciseOrder: rawData.exerciseOrder || buildDefaultOrder()
+        };
+      }
+      showImportModal(importPayload);
+    } catch(err) {
+      showToast('导入失败：文件格式错误');
+    }
+  };
+  reader.readAsText(file);
+  event.target.value = '';
+}
+
+function showImportModal(importPayload) {
+  const meta = importPayload._meta;
+  const localDays = countTotalDays(state.completedDates);
+  const localExercises = countTotalExercises(state.completedDates);
+  const importDays = meta.totalDays;
+  const importExercises = meta.totalExercises;
+
+  let exportDateStr = '未知';
+  if (meta.exportDate) {
+    const ed = new Date(meta.exportDate);
+    exportDateStr = `${ed.getFullYear()}-${String(ed.getMonth()+1).padStart(2,'0')}-${ed.getDate()} ${String(ed.getHours()).padStart(2,'0')}:${String(ed.getMinutes()).padStart(2,'0')}`;
+  }
+  let deviceStr = '未知';
+  if (meta.deviceInfo) {
+    const ua = meta.deviceInfo;
+    if (ua.includes('iPhone') || ua.includes('iPad')) deviceStr = 'iOS 设备';
+    else if (ua.includes('Macintosh')) deviceStr = 'Mac';
+    else if (ua.includes('Android')) deviceStr = 'Android 设备';
+    else if (ua.includes('Windows')) deviceStr = 'Windows 设备';
+    else deviceStr = ua.substring(0, 40) + '...';
+  }
+
+  const html = `
+    <div style="padding:20px 0;">
+      <h4 style="font-size:16px;font-weight:600;margin-bottom:16px;">导入数据预览</h4>
+      <div style="background:var(--primary-bg);border-radius:var(--radius-sm);padding:12px;margin-bottom:12px;">
+        <div style="font-size:13px;color:var(--text-secondary);margin-bottom:4px;">来源信息</div>
+        <div style="font-size:14px;">导出时间：${exportDateStr}</div>
+        <div style="font-size:14px;">设备：${deviceStr}</div>
+      </div>
+      <div style="display:flex;gap:10px;margin-bottom:16px;">
+        <div style="flex:1;background:#fff3e0;border-radius:var(--radius-sm);padding:12px;text-align:center;">
+          <div style="font-size:12px;color:#e65100;margin-bottom:4px;">导入文件</div>
+          <div style="font-size:20px;font-weight:700;color:#e65100;">${importDays}</div>
+          <div style="font-size:11px;color:#e65100;">打卡天数</div>
+          <div style="font-size:16px;font-weight:600;color:#e65100;margin-top:4px;">${importExercises}</div>
+          <div style="font-size:11px;color:#e65100;">完成动作</div>
+        </div>
+        <div style="flex:1;background:var(--primary-bg);border-radius:var(--radius-sm);padding:12px;text-align:center;">
+          <div style="font-size:12px;color:var(--primary);margin-bottom:4px;">本地数据</div>
+          <div style="font-size:20px;font-weight:700;color:var(--primary);">${localDays}</div>
+          <div style="font-size:11px;color:var(--primary);">打卡天数</div>
+          <div style="font-size:16px;font-weight:600;color:var(--primary);margin-top:4px;">${localExercises}</div>
+          <div style="font-size:11px;color:var(--primary);">完成动作</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:10px;">
+        <button class="btn btn-primary" onclick="doImportMerge()" style="flex:1;">合并数据（推荐）</button>
+        <button class="btn btn-danger" onclick="doImportOverwrite()" style="flex:1;">覆盖本地</button>
+      </div>
+      <button class="btn btn-secondary" onclick="hideImportModal()" style="width:100%;margin-top:10px;">取消</button>
+    </div>
+  `;
+
+  document.getElementById('importModalContent').innerHTML = html;
+  document.getElementById('importModal').classList.add('show');
+  document.body.style.overflow = 'hidden';
+  window._pendingImportData = importPayload;
+}
+
+function hideImportModal() {
+  document.getElementById('importModal').classList.remove('show');
+  document.body.style.overflow = '';
+  window._pendingImportData = null;
+}
+
+function doImportMerge() {
+  const payload = window._pendingImportData;
+  if (!payload) return;
+
+  const mergedCompleted = { ...state.completedDates };
+  for (const date in payload.completedDates) {
+    mergedCompleted[date] = payload.completedDates[date];
+  }
+  const mergedStarred = [...new Set([...state.starred, ...payload.starred])];
+  const mergedNotes = { ...state.notes };
+  for (const key in payload.notes) {
+    mergedNotes[key] = payload.notes[key];
+  }
+  const mergedOrder = { ...state.exerciseOrder };
+  if (payload.exerciseOrder) {
+    for (const mod in payload.exerciseOrder) {
+      if (payload.exerciseOrder[mod] !== null) {
+        mergedOrder[mod] = payload.exerciseOrder[mod];
+      }
+    }
+  }
+
+  state.completedDates = mergedCompleted;
+  state.starred = mergedStarred;
+  state.notes = mergedNotes;
+  state.exerciseOrder = mergedOrder;
+  state.lastImportTime = new Date().toISOString();
+  saveState();
+  hideImportModal();
+  updateDataManagementInfo();
+  showToast('数据合并成功');
+  renderToday();
+}
+
+function doImportOverwrite() {
+  const payload = window._pendingImportData;
+  if (!payload) return;
+
+  state.completedDates = payload.completedDates || {};
+  state.starred = payload.starred || [];
+  state.notes = payload.notes || {};
+  state.exerciseOrder = payload.exerciseOrder || buildDefaultOrder();
+  state.lastImportTime = new Date().toISOString();
+  saveState();
+  hideImportModal();
+  updateDataManagementInfo();
+  showToast('数据已覆盖');
+  renderToday();
+}
+
+function formatTimeStr(isoStr) {
+  if (!isoStr) return '';
+  const d = new Date(isoStr);
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${d.getDate()} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+}
+
+function updateDataManagementInfo() {
+  const exportInfo = document.getElementById('lastExportInfo');
+  const importInfo = document.getElementById('lastImportInfo');
+  if (exportInfo) {
+    if (state.lastExportTime) {
+      exportInfo.textContent = '上次导出：' + formatTimeStr(state.lastExportTime);
+      exportInfo.style.display = 'block';
+    } else {
+      exportInfo.style.display = 'none';
+    }
+  }
+  if (importInfo) {
+    if (state.lastImportTime) {
+      importInfo.textContent = '上次导入：' + formatTimeStr(state.lastImportTime);
+      importInfo.style.display = 'block';
+    } else {
+      importInfo.style.display = 'none';
+    }
+  }
+}
+
+function resetAllData() {
+  localStorage.removeItem(STORAGE_KEY + '_state');
+  state = {
+    completedDates: {},
+    starred: [],
+    notes: {},
+    exerciseOrder: buildDefaultOrder(),
+    calendarMonth: new Date().getMonth(),
+    calendarYear: new Date().getFullYear(),
+    lastExportTime: null,
+    lastImportTime: null
+  };
+  saveState();
+  updateDataManagementInfo();
+  showToast('数据已重置');
+  renderToday();
+}
+
+
+// ==================== REMINDER ====================
+let reminderState = {
+  enabled: false,
+  interval: 30,
+  sound: true,
+  vibrate: true,
+  nextReminderTime: null,
+  missedCount: 0
+};
+let reminderTimer = null;
+let snoozeTimer = null;
+
+function loadReminderState() {
+  try {
+    const saved = localStorage.getItem(REMINDER_KEY + '_state');
+    if (saved) {
+      reminderState = { ...reminderState, ...JSON.parse(saved) };
+    }
+  } catch(e) {}
+  updateReminderUI();
+}
+
+function saveReminderSettings() {
+  reminderState.sound = document.getElementById('reminderSound').checked;
+  reminderState.vibrate = document.getElementById('reminderVibrate').checked;
+  localStorage.setItem(REMINDER_KEY + '_state', JSON.stringify(reminderState));
+  updateReminderStatus();
+}
+
+function toggleReminder() {
+  const enabled = document.getElementById('reminderEnabled').checked;
+  reminderState.enabled = enabled;
+  document.getElementById('reminderOptions').style.display = enabled ? 'block' : 'none';
+
+  if (enabled) {
+    startReminderTimer();
+  } else {
+    stopReminderTimer();
+  }
+
+  localStorage.setItem(REMINDER_KEY + '_state', JSON.stringify(reminderState));
+  updateReminderStatus();
+}
+
+function setReminderInterval(minutes) {
+  reminderState.interval = minutes;
+  document.getElementById('btn30').classList.toggle('active', minutes === 30);
+  document.getElementById('btn60').classList.toggle('active', minutes === 60);
+
+  if (reminderState.enabled) {
+    startReminderTimer();
+  }
+
+  localStorage.setItem(REMINDER_KEY + '_state', JSON.stringify(reminderState));
+  updateReminderStatus();
+}
+
+function startReminderTimer() {
+  stopReminderTimer();
+
+  const ms = reminderState.interval * 60 * 1000;
+  reminderState.nextReminderTime = Date.now() + ms;
+
+  reminderTimer = setTimeout(() => {
+    triggerReminder();
+  }, ms);
+
+  updateReminderStatus();
+}
+
+function stopReminderTimer() {
+  if (reminderTimer) {
+    clearTimeout(reminderTimer);
+    reminderTimer = null;
+  }
+  if (snoozeTimer) {
+    clearTimeout(snoozeTimer);
+    snoozeTimer = null;
+  }
+}
+
+function triggerReminder() {
+  if (!reminderState.enabled) return;
+
+  if (document.visibilityState === 'visible') {
+    showReminderModal();
+    if (reminderState.sound) playReminderSound();
+    if (reminderState.vibrate && navigator.vibrate) {
+      navigator.vibrate([200, 100, 200]);
+    }
+  } else {
+    reminderState.missedCount++;
+    localStorage.setItem(REMINDER_KEY + '_state', JSON.stringify(reminderState));
+  }
+
+  if (reminderState.enabled) {
+    startReminderTimer();
+  }
+}
+
+function showReminderModal() {
+  const modal = document.getElementById('reminderModal');
+  const text = document.getElementById('reminderModalText');
+  text.textContent = `已经坐了${reminderState.interval}分钟，起来活动一下吧！`;
+  modal.classList.add('show');
+}
+
+function closeReminderModal() {
+  document.getElementById('reminderModal').classList.remove('show');
+}
+
+function snoozeReminder() {
+  closeReminderModal();
+
+  snoozeTimer = setTimeout(() => {
+    if (reminderState.enabled) {
+      showReminderModal();
+      if (reminderState.sound) playReminderSound();
+      if (reminderState.vibrate && navigator.vibrate) {
+        navigator.vibrate([200, 100, 200]);
+      }
+    }
+  }, 5 * 60 * 1000);
+
+  showToast('5分钟后再次提醒');
+}
+
+function startExerciseFromReminder() {
+  closeReminderModal();
+  switchPage('today');
+}
+
+function playReminderSound() {
+  try {
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    const oscillator = audioContext.createOscillator();
+    const gainNode = audioContext.createGain();
+
+    oscillator.connect(gainNode);
+    gainNode.connect(audioContext.destination);
+
+    oscillator.frequency.value = 800;
+    oscillator.type = 'sine';
+
+    gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+
+    oscillator.start(audioContext.currentTime);
+    oscillator.stop(audioContext.currentTime + 0.5);
+  } catch(e) {}
+}
+
+function updateReminderUI() {
+  document.getElementById('reminderEnabled').checked = reminderState.enabled;
+  document.getElementById('reminderOptions').style.display = reminderState.enabled ? 'block' : 'none';
+  document.getElementById('reminderSound').checked = reminderState.sound;
+  document.getElementById('reminderVibrate').checked = reminderState.vibrate;
+
+  document.getElementById('btn30').classList.toggle('active', reminderState.interval === 30);
+  document.getElementById('btn60').classList.toggle('active', reminderState.interval === 60);
+
+  if (reminderState.enabled) {
+    startReminderTimer();
+  }
+}
+
+function updateReminderStatus() {
+  const statusEl = document.getElementById('reminderStatus');
+  if (!reminderState.enabled) {
+    statusEl.textContent = '下次提醒：未开启';
+  } else if (reminderState.nextReminderTime) {
+    const nextTime = new Date(reminderState.nextReminderTime);
+    const timeStr = `${nextTime.getHours()}:${String(nextTime.getMinutes()).padStart(2,'0')}`;
+    statusEl.textContent = `下次提醒：${timeStr}`;
+  }
+}
+
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible' && reminderState.missedCount > 0) {
+    showToast(`您有${reminderState.missedCount}次错过的提醒`);
+    reminderState.missedCount = 0;
+    localStorage.setItem(REMINDER_KEY + '_state', JSON.stringify(reminderState));
+  }
+});
+
+function initReminder() {
+  loadReminderState();
+}
+
+// ==================== INIT ====================
+function init() {
+  loadState();
+  initReminder();
+  renderToday();
+  updateDataManagementInfo();
+}
+
+document.addEventListener('DOMContentLoaded', init);
+</script>
+
+<!-- Reminder Modal -->
+<div class="reminder-modal-overlay" id="reminderModal" onclick="if(event.target===this)closeReminderModal()">
+  <div class="reminder-modal">
+    <div class="big-icon">&#128276;</div>
+    <h3>该活动颈部了！</h3>
+    <p id="reminderModalText">已经坐了30分钟，起来活动一下吧</p>
+    <div class="btn-row">
+      <button class="btn btn-secondary" onclick="snoozeReminder()">稍后(5分)</button>
+      <button class="btn btn-primary" onclick="startExerciseFromReminder()">开始训练</button>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
